@@ -59,7 +59,7 @@ public class NITProtocolManager {
 	/**
 	 * The path to the file with the norms to be used.
 	 */
-	@ConfigProperty(name = "c1_nit_protocol_manager.norms.file", defaultValue = "eu/valawai/c1_nit_protocol_manager/nit-protocol.dlr")
+	@ConfigProperty(name = "c1_nit_protocol_manager.norms.file", defaultValue = "eu/valawai/c1_nit_protocol_manager/nit-protocol.drl")
 	String normsFile;
 
 	/**

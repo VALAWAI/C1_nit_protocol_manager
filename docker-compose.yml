@@ -1,11 +1,11 @@
 services:
   nit_protocol_manager:
-    image: valawai/c1_nit_protocol_manager:${c1_nit_protocol_manager_TAG:-latest}
+    image: valawai/c1_nit_protocol_manager:${C1_NIT_PROTOCOL_MANAGER_TAG:-latest}
     container_name: c1_nit_protocol_manager
     networks:  
       - nit_protocol_manager_net
     ports:
-      - ${c1_nit_protocol_manager_PORT:-8080}:8080
+      - ${C1_NIT_PROTOCOL_MANAGER_PORT:-8080}:8080
     depends_on:
       mov:
         condition: service_healthy
