@@ -1,0 +1,44 @@
+/*
+  Copyright 2023 UDT-IA, IIIA-CSIC
+
+  Use of this source code is governed by an MIT-style
+  license that can be found in the LICENSE file or at
+  https://opensource.org/licenses/MIT.
+*/
+
+package eu.valawai.c1_nit_protocol_manager;
+
+import eu.valawai.c1_nit_protocol_manager.messages.TreatmentPayload;
+import eu.valawai.c1_nit_protocol_manager.messages.PatientStatusCriteriaPayload;
+import eu.valawai.c1_nit_protocol_manager.messages.TreatmentAction;
+import eu.valawai.c1_nit_protocol_manager.messages.NITLevel;
+import eu.valawai.c1_nit_protocol_manager.messages.TreatmentActionFeedbackService;
+
+global TreatmentActionFeedbackService service;
+
+
+rule "NIT Level 1 allow all actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.ONE)
+		$action: TreatmentAction() from $treatment.actions
+	then
+		service.sendAllow($treatment.id,$action);
+end
+
+rule "NIT Level 2A allowed actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.ONE)
+		$action: TreatmentAction() from $treatment.actions
+		$action != TreatmentAction.CPR
+	then
+		service.sendAllow($treatment.id,$action);
+end
+
+rule "NIT Level 2A denied actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.ONE)
+		$action: TreatmentAction() from $treatment.actions
+		$action == TreatmentAction.CPR
+	then
+		service.sendDeny($treatment.id,$action);
+end

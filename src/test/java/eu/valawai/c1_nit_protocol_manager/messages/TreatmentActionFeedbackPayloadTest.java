@@ -11,30 +11,32 @@ package eu.valawai.c1_nit_protocol_manager.messages;
 import eu.valawai.c1_nit_protocol_manager.ValueGenerator;
 
 /**
- * Test the {@link TreatmentFeedbackPayload}.
+ * Test the {@link TreatmentActionFeedbackPayload}.
  *
- * @see TreatmentFeedbackPayload
+ * @see TreatmentActionFeedbackPayload
  *
  * @author UDT-IA, IIIA-CSIC
  */
-class TreatmentFeedbackPayloadTest extends PayloadTestCase<TreatmentFeedbackPayload> {
+public class TreatmentActionFeedbackPayloadTest extends PayloadTestCase<TreatmentActionFeedbackPayload> {
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TreatmentFeedbackPayload createEmptyModel() {
+	public TreatmentActionFeedbackPayload createEmptyModel() {
 
-		return new TreatmentFeedbackPayload();
+		return new TreatmentActionFeedbackPayload();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void fillIn(TreatmentFeedbackPayload model) {
+	public void fillIn(TreatmentActionFeedbackPayload model) {
 
 		model.treatment_id = ValueGenerator.nextPattern("treatment_id_{0}");
+		model.action = ValueGenerator.next(TreatmentAction.values());
+		model.feedback = ValueGenerator.next(TreatmentActionFeedback.values());
 	}
 
 }

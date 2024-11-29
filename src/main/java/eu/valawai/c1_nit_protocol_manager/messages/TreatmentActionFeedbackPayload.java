@@ -17,13 +17,25 @@ import jakarta.validation.constraints.NotEmpty;
  *
  * @author UDT-IA, IIIA-CSIC
  */
-@JsonRootName("treatment_feedback_payload")
-public class TreatmentFeedbackPayload extends Payload {
+@JsonRootName("treatment_action_feedback_payload")
+public class TreatmentActionFeedbackPayload extends Payload {
 
 	/**
 	 * The id of the treatment that this is the feedback.
 	 */
 	@NotEmpty
 	public String treatment_id;
+
+	/**
+	 * The action that this is feedback.
+	 */
+	@NotEmpty
+	public TreatmentAction action;
+
+	/**
+	 * If feedback over the action of the treatment.
+	 */
+	@NotEmpty
+	public TreatmentActionFeedback feedback;
 
 }

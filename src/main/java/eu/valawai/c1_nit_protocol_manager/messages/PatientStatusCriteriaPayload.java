@@ -10,6 +10,8 @@ package eu.valawai.c1_nit_protocol_manager.messages;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import jakarta.validation.constraints.NotEmpty;
+
 /**
  * The status of a patient by some criteria.
  *
@@ -107,6 +109,7 @@ public class PatientStatusCriteriaPayload extends Payload {
 	/**
 	 * Describe the level of therapeutic intensity of the patient
 	 */
+	@NotEmpty
 	public NITLevel nit_level;
 
 }
