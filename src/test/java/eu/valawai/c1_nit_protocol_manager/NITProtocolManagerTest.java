@@ -153,14 +153,137 @@ public class NITProtocolManagerTest {
 			assertNotNull(sent, "Not process treatment");
 			assertEquals(treatment.id, sent.treatment_id);
 			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			var expectedFeedback = TreatmentActionFeedback.ALLOW;
 			if (sent.action == TreatmentAction.CPR) {
 
-				assertEquals(TreatmentActionFeedback.DENY, sent.feedback);
-
-			} else {
-
-				assertEquals(TreatmentActionFeedback.ALLOW, sent.feedback);
+				expectedFeedback = TreatmentActionFeedback.DENY;
 			}
+			assertEquals(expectedFeedback, sent.feedback);
+
+		} while (!actions.isEmpty());
+
+	}
+
+	/**
+	 * Check that the treatment action on NIT level 2B are validated.
+	 */
+	@Test
+	public void shouldValidateNITLevel2B() {
+
+		final var treatment = new TreatmentPayloadTest().nextModel();
+		treatment.before_status.nit_level = NITLevel.TWO_B;
+		final var actions = new ArrayList<>(Arrays.asList(TreatmentAction.values()));
+		treatment.actions = actions;
+		ValueGenerator.shuffle(treatment.actions);
+		this.assertSendTreatment(treatment);
+
+		do {
+
+			final var sent = this.queue.waitUntilNextTreatment(Duration.ofSeconds(30));
+			assertNotNull(sent, "Not process treatment");
+			assertEquals(treatment.id, sent.treatment_id);
+			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			var expectedFeedback = TreatmentActionFeedback.ALLOW;
+			if (sent.action == TreatmentAction.CPR || sent.action == TreatmentAction.ICU) {
+
+				expectedFeedback = TreatmentActionFeedback.DENY;
+
+			} else if (sent.action == TreatmentAction.TRANSPLANT || sent.action == TreatmentAction.PALLIATIVE_SURGERY
+					|| sent.action == TreatmentAction.CURE_SURGERY) {
+
+				expectedFeedback = TreatmentActionFeedback.UNKNOWN;
+			}
+			assertEquals(expectedFeedback, sent.feedback);
+
+		} while (!actions.isEmpty());
+
+	}
+
+	/**
+	 * Check that the treatment action on NIT level 3 are validated.
+	 */
+	@Test
+	public void shouldValidateNITLevel3() {
+
+		final var treatment = new TreatmentPayloadTest().nextModel();
+		treatment.before_status.nit_level = NITLevel.THREE;
+		final var actions = new ArrayList<>(Arrays.asList(TreatmentAction.values()));
+		treatment.actions = actions;
+		ValueGenerator.shuffle(treatment.actions);
+		this.assertSendTreatment(treatment);
+
+		do {
+
+			final var sent = this.queue.waitUntilNextTreatment(Duration.ofSeconds(30));
+			assertNotNull(sent, "Not process treatment");
+			assertEquals(treatment.id, sent.treatment_id);
+			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			var expectedFeedback = TreatmentActionFeedback.UNKNOWN;
+			if (sent.action == TreatmentAction.CPR || sent.action == TreatmentAction.ICU) {
+
+				expectedFeedback = TreatmentActionFeedback.DENY;
+			}
+			assertEquals(expectedFeedback, sent.feedback);
+
+		} while (!actions.isEmpty());
+
+	}
+
+	/**
+	 * Check that the treatment action on NIT level 4 are validated.
+	 */
+	@Test
+	public void shouldValidateNITLevel4() {
+
+		final var treatment = new TreatmentPayloadTest().nextModel();
+		treatment.before_status.nit_level = NITLevel.FOUR;
+		final var actions = new ArrayList<>(Arrays.asList(TreatmentAction.values()));
+		treatment.actions = actions;
+		ValueGenerator.shuffle(treatment.actions);
+		this.assertSendTreatment(treatment);
+
+		do {
+
+			final var sent = this.queue.waitUntilNextTreatment(Duration.ofSeconds(30));
+			assertNotNull(sent, "Not process treatment");
+			assertEquals(treatment.id, sent.treatment_id);
+			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			var expectedFeedback = TreatmentActionFeedback.DENY;
+			if (sent.action == TreatmentAction.VASOACTIVE_DRUGS || sent.action == TreatmentAction.NIMV) {
+
+				expectedFeedback = TreatmentActionFeedback.UNKNOWN;
+			}
+			assertEquals(expectedFeedback, sent.feedback);
+
+		} while (!actions.isEmpty());
+
+	}
+
+	/**
+	 * Check that the treatment action on NIT level 5 are validated.
+	 */
+	@Test
+	public void shouldValidateNITLevel5() {
+
+		final var treatment = new TreatmentPayloadTest().nextModel();
+		treatment.before_status.nit_level = NITLevel.FIVE;
+		final var actions = new ArrayList<>(Arrays.asList(TreatmentAction.values()));
+		treatment.actions = actions;
+		ValueGenerator.shuffle(treatment.actions);
+		this.assertSendTreatment(treatment);
+
+		do {
+
+			final var sent = this.queue.waitUntilNextTreatment(Duration.ofSeconds(30));
+			assertNotNull(sent, "Not process treatment");
+			assertEquals(treatment.id, sent.treatment_id);
+			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			var expectedFeedback = TreatmentActionFeedback.DENY;
+			if (sent.action == TreatmentAction.NIMV) {
+
+				expectedFeedback = TreatmentActionFeedback.UNKNOWN;
+			}
+			assertEquals(expectedFeedback, sent.feedback);
 
 		} while (!actions.isEmpty());
 
