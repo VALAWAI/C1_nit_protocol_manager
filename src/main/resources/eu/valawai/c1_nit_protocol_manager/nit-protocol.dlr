@@ -42,3 +42,31 @@ rule "NIT Level 2A denied actions"
 	then
 		service.sendDeny($treatment.id,$action);
 end
+
+
+rule "NIT Level 2B allowed actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_B)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action == TreatmentAction.NIMV || $action == TreatmentAction.VASOACTIVE_DRUGS || $action == TreatmentAction.DIALYSIS || $action == TreatmentAction.SIMPLE_CLINICAL_TRIAL || $action == TreatmentAction.MEDIUM_CLINICAL_TRIAL || $action == TreatmentAction.ADVANCED_CLINICAL_TRIAL)
+	then
+		service.sendAllow($treatment.id,$action);
+end
+
+rule "NIT Level 2B denied actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_B)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action == TreatmentAction.CPR || $action == TreatmentAction.ICU)
+	then
+		service.sendDeny($treatment.id,$action);
+end
+
+rule "NIT Level 2B unknown actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_B)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action == TreatmentAction.TRANSPLANT || $action == TreatmentAction.PALLIATIVE_SURGERY || $action == TreatmentAction.CURE_SURGERY)
+	then
+		service.sendUnknown($treatment.id,$action);
+end
