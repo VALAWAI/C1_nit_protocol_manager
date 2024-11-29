@@ -70,3 +70,57 @@ rule "NIT Level 2B unknown actions"
 	then
 		service.sendUnknown($treatment.id,$action);
 end
+
+rule "NIT Level 3 denied actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.THREE)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action == TreatmentAction.CPR || $action == TreatmentAction.ICU)
+	then
+		service.sendDeny($treatment.id,$action);
+end
+
+rule "NIT Level 3 unknown actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.THREE)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action != TreatmentAction.CPR && $action != TreatmentAction.ICU)
+	then
+		service.sendUnknown($treatment.id,$action);
+end
+
+rule "NIT Level 4 denied actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FOUR)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action != TreatmentAction.VASOACTIVE_DRUGS && $action != TreatmentAction.NIMV)
+	then
+		service.sendDeny($treatment.id,$action);
+end
+
+rule "NIT Level 4 unknown actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FOUR)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action == TreatmentAction.VASOACTIVE_DRUGS || $action == TreatmentAction.NIMV)
+	then
+		service.sendUnknown($treatment.id,$action);
+end
+
+rule "NIT Level 5 denied actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FIVE)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action != TreatmentAction.NIMV)
+	then
+		service.sendDeny($treatment.id,$action);
+end
+
+rule "NIT Level 5 unknown actions"
+	when
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FIVE)
+		$action: TreatmentAction() from $treatment.actions
+		eval($action == TreatmentAction.NIMV)
+	then
+		service.sendUnknown($treatment.id,$action);
+end
