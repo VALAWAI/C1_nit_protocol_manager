@@ -27,18 +27,18 @@ end
 
 rule "NIT Level 2A allowed actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.ONE)
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_A)
 		$action: TreatmentAction() from $treatment.actions
-		$action != TreatmentAction.CPR
+		eval($action != TreatmentAction.CPR)
 	then
 		service.sendAllow($treatment.id,$action);
 end
 
 rule "NIT Level 2A denied actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.ONE)
+		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_A)
 		$action: TreatmentAction() from $treatment.actions
-		$action == TreatmentAction.CPR
+		eval($action == TreatmentAction.CPR)
 	then
 		service.sendDeny($treatment.id,$action);
 end
