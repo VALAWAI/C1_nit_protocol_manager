@@ -3,7 +3,7 @@ info:
  title: C1 NIT protocol manager API
  version: '1.0.0'
  description: |
-  This VALAWAI component check that any treatement follows the NIT protocol.
+  This VALAWAI component check that any treatment follows the NIT protocol.
  license:
   name: GNU General Public License version 3
   url: https://opensource.org/license/gpl-3-0/
@@ -19,7 +19,7 @@ channels:
         $ref: '#/components/messages/registered_component'
 
   valawai/c1/nit_protocol_manager/data/treatment:
-    description: Notify this component when a treatement has to apply to a patient.
+    description: Notify this component when a treatment has to apply to a patient.
     subscribe:
       message:
         $ref: '#/components/messages/treatment'
@@ -284,7 +284,7 @@ components:
                 - $ref: '#/components/schemas/payload_schema'
 
     treatment_payload:
-      description: The payload that contains the information of a treatement.
+      description: The payload that contains the information of a treatment.
       type: object
       properties:
         id:
@@ -318,7 +318,7 @@ components:
             
     treatment_action:
       description:  >
-         The posible treatement actions to apply over a patient.
+         The posible treatment actions to apply over a patient.
           * 'CPR' The patient can receive a Cardiopulmonary resuscitation.
           * 'TRANSPLANT' The patient need an organ transplant.
           * 'ICU' The patient can be in the intensive curing unit.
@@ -485,7 +485,7 @@ components:
             - FIVE
 
     treatment_action_feedback_payload:
-      description: The
+      description: The feedback about an action of a treatment.
       type: object
       properties:
         treatment_id:

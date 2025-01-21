@@ -100,12 +100,12 @@ public class NITProtocolManagerTest {
 	 * Check that not process bad treatment.
 	 */
 	@Test
-	public void shouldNotProcessInValidTreatement() {
+	public void shouldNotProcessInValidTreatment() {
 
-		final var treatement = new TreatmentPayload();
-		this.assertSendTreatment(treatement);
+		final var treatment = new TreatmentPayload();
+		this.assertSendTreatment(treatment);
 		this.logAsserts
-				.waitUntiLogMatch(LogAsserts.withLogLevel(LogLevel.ERROR).and(LogAsserts.withLogPayload(treatement)));
+				.waitUntiLogMatch(LogAsserts.withLogLevel(LogLevel.ERROR).and(LogAsserts.withLogPayload(treatment)));
 
 	}
 
