@@ -1,7 +1,7 @@
 asyncapi: '2.6.0'
 info:
  title: C1 NIT protocol manager API
- version: '1.0.0'
+ version: '1.0.1'
  description: |
   This VALAWAI component check that any treatment follows the NIT protocol.
  license:
