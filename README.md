@@ -36,16 +36,8 @@ This script will build the image and tag it with the component's version
 
 The script offers several options for customization:
 
-* **Build without cache:** Use `-nc` or `--no-cache` to skip using the cached
- image layers during the build process.
 * **Specify tag:** Use `-t <tag>` or `--tag <tag>` to assign a custom tag name 
 to the image (e.g., `./buildDockerImages.sh -t my-custom-image-name`).
-* **Target architectures:** Use `-p <platforms>` or `--platform <platforms>` to specify
- the architectures (CPU types) for which the image should be built 
- (e.g., `./buildDockerImages.sh -p linux/arm64`). By default, the script builds 
- for `linux/arm64` and `linux/amd64` (both ARM and AMD processors).
-* **Use default platforms:** Use `-dp` or `--default-platforms` to explicitly instruct
- the script to use the default architectures (linux/arm64 and linux/amd64).
 * **Help message:** Use `-h` or `--help` to display a detailed explanation 
 of all available options.
 
