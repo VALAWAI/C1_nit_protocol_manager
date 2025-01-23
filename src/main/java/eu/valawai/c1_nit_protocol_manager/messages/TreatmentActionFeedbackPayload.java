@@ -11,6 +11,7 @@ package eu.valawai.c1_nit_protocol_manager.messages;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * The feedback for a treatment.
@@ -29,13 +30,13 @@ public class TreatmentActionFeedbackPayload extends Payload {
 	/**
 	 * The action that this is feedback.
 	 */
-	@NotEmpty
+	@NotNull
 	public TreatmentAction action;
 
 	/**
 	 * If feedback over the action of the treatment.
 	 */
-	@NotEmpty
+	@NotNull
 	public TreatmentActionFeedback feedback;
 
 }
