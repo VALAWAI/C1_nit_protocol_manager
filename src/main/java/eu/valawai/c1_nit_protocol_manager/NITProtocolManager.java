@@ -145,6 +145,7 @@ public class NITProtocolManager {
 
 			} else {
 
+				this.log.debugWithPayload(payload, "Received a treatment to check if it follows the NIT protocol.");
 				final var session = this.helper.build().newKieSession();
 				try {
 

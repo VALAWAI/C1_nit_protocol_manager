@@ -11,7 +11,7 @@ package eu.valawai.c1_nit_protocol_manager.messages;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-import io.quarkus.logging.Log;
+import eu.valawai.c1_nit_protocol_manager.messages.mov.LogService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -22,6 +22,12 @@ import jakarta.inject.Inject;
  */
 @ApplicationScoped
 public class TreatmentActionFeedbackService {
+
+	/**
+	 * The component to send log messages to MOV.
+	 */
+	@Inject
+	LogService log;
 
 	/**
 	 * The service to send the treatment action feedbacks.
@@ -41,11 +47,11 @@ public class TreatmentActionFeedbackService {
 
 			if (error == null) {
 
-				Log.infov("Sent {0}.", payload);
+				this.log.debugWithPayload(payload, "Sent if a treatment action follows the NIT protocol.");
 
 			} else {
 
-				Log.errorv(error, "Cannot send {0}.", payload);
+				this.log.errorWithPayload(payload, "Cannot send the action feedback.");
 			}
 			return null;
 		});
