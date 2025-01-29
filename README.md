@@ -16,7 +16,7 @@ payload structure, you can refer to the following resources:
 
  - Type: C1
  - Name: NIT protocol manager
- - Version: 1.1.0 (January 23, 2025)
+ - Version: 1.2.0 (January 29, 2025)
  - API: [1.0.1 (January 21, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yml)
  - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
@@ -119,8 +119,8 @@ its startup sequence. A successful response signifies that the component's initi
  the results of all the aforementioned checks.
 
 Each endpoint returns a JSON payload containing a `status` field (with values of `UP` or `DOWN`)
- and a `checks` array detailing the individual health checks performed. The following example 
- illustrates the response from a `GET` request to the `/q/health` endpoint:
+and a `checks` array detailing the individual health checks performed. The following example 
+illustrates the response from a `GET` request to the `/q/health` endpoint:
 
 ```json
 {
@@ -186,7 +186,7 @@ check configuration for this component:
 
 It is important to note that the host and port on which these REST health endpoints 
 are exposed can be configured using the Docker environment variables **QUARKUS_HTTP_HOST**
-and QUARKUS_HTTP_PORT, respectively.
+and **QUARKUS_HTTP_PORT**, respectively.
 
 
 ## Deployment on a VALAWAI Environment

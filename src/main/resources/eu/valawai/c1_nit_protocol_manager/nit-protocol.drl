@@ -124,3 +124,19 @@ rule "NIT Level 5 unknown actions"
 	then
 		service.sendUnknown($treatment.id,$action);
 end
+
+rule "Unknown NIT Level => unknown actions"
+	when
+		$treatment: TreatmentPayload(before_status != null, before_status.nit_level == null)
+		$action: TreatmentAction() from $treatment.actions
+	then
+		service.sendUnknown($treatment.id,$action);
+end
+
+rule "Unknown before status => unknown actions"
+	when
+		$treatment: TreatmentPayload(before_status == null)
+		$action: TreatmentAction() from $treatment.actions
+	then
+		service.sendUnknown($treatment.id,$action);
+end

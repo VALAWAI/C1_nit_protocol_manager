@@ -97,12 +97,28 @@ public class NITProtocolManagerTest {
 	}
 
 	/**
-	 * Check that not process bad treatment.
+	 * Check that not process bad treatment without actions.
 	 */
 	@Test
-	public void shouldNotProcessInValidTreatment() {
+	public void shouldNotProcessInValidTreatmentWithoutAction() {
 
 		final var treatment = new TreatmentPayload();
+		treatment.id = ValueGenerator.nextUUID().toString();
+		this.assertSendTreatment(treatment);
+		this.logAsserts
+				.waitUntiLogMatch(LogAsserts.withLogLevel(LogLevel.ERROR).and(LogAsserts.withLogPayload(treatment)));
+
+	}
+
+	/**
+	 * Check that not process bad treatment without actions.
+	 */
+	@Test
+	public void shouldNotProcessInValidTreatmentWithoutId() {
+
+		final var treatment = new TreatmentPayload();
+		treatment.actions = new ArrayList<>();
+		treatment.actions.addAll(Arrays.asList(TreatmentAction.values()));
 		this.assertSendTreatment(treatment);
 		this.logAsserts
 				.waitUntiLogMatch(LogAsserts.withLogLevel(LogLevel.ERROR).and(LogAsserts.withLogPayload(treatment)));
@@ -284,6 +300,56 @@ public class NITProtocolManagerTest {
 				expectedFeedback = TreatmentActionFeedback.UNKNOWN;
 			}
 			assertEquals(expectedFeedback, sent.feedback);
+
+		} while (!actions.isEmpty());
+
+	}
+
+	/**
+	 * Check that the treatment action on without NIT level are validated.
+	 */
+	@Test
+	public void shouldValidateWithoutNITLevel() {
+
+		final var treatment = new TreatmentPayloadTest().nextModel();
+		treatment.before_status.nit_level = null;
+		final var actions = new ArrayList<>(Arrays.asList(TreatmentAction.values()));
+		treatment.actions = actions;
+		ValueGenerator.shuffle(treatment.actions);
+		this.assertSendTreatment(treatment);
+
+		do {
+
+			final var sent = this.queue.waitUntilNextTreatment(Duration.ofSeconds(30));
+			assertNotNull(sent, "Not process treatment");
+			assertEquals(treatment.id, sent.treatment_id);
+			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			assertEquals(TreatmentActionFeedback.UNKNOWN, sent.feedback);
+
+		} while (!actions.isEmpty());
+
+	}
+
+	/**
+	 * Check that the treatment action on without before status.
+	 */
+	@Test
+	public void shouldValidateWithoutBeforeStatus() {
+
+		final var treatment = new TreatmentPayloadTest().nextModel();
+		treatment.before_status = null;
+		final var actions = new ArrayList<>(Arrays.asList(TreatmentAction.values()));
+		treatment.actions = actions;
+		ValueGenerator.shuffle(treatment.actions);
+		this.assertSendTreatment(treatment);
+
+		do {
+
+			final var sent = this.queue.waitUntilNextTreatment(Duration.ofSeconds(30));
+			assertNotNull(sent, "Not process treatment");
+			assertEquals(treatment.id, sent.treatment_id);
+			assertTrue(actions.remove(sent.action), "Unexpected action: " + sent.action);
+			assertEquals(TreatmentActionFeedback.UNKNOWN, sent.feedback);
 
 		} while (!actions.isEmpty());
 

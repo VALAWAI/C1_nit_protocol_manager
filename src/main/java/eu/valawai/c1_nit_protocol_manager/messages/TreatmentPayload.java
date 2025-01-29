@@ -13,7 +13,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * The treatment to apply to a patient.
@@ -42,7 +41,6 @@ public class TreatmentPayload extends Payload {
 	/**
 	 * The status before to apply the treatment.
 	 */
-	@NotNull
 	public PatientStatusCriteriaPayload before_status;
 
 	/**
