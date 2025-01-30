@@ -19,7 +19,7 @@ global TreatmentActionFeedbackService service;
 
 rule "NIT Level 1 allow all actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.ONE)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.ONE)
 		$action: TreatmentAction() from $treatment.actions
 	then
 		service.sendAllow($treatment.id,$action);
@@ -27,7 +27,7 @@ end
 
 rule "NIT Level 2A allowed actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_A)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.TWO_A)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action != TreatmentAction.CPR)
 	then
@@ -36,7 +36,7 @@ end
 
 rule "NIT Level 2A denied actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_A)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.TWO_A)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.CPR)
 	then
@@ -46,7 +46,7 @@ end
 
 rule "NIT Level 2B allowed actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_B)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.TWO_B)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.NIMV || $action == TreatmentAction.VASOACTIVE_DRUGS || $action == TreatmentAction.DIALYSIS || $action == TreatmentAction.SIMPLE_CLINICAL_TRIAL || $action == TreatmentAction.MEDIUM_CLINICAL_TRIAL || $action == TreatmentAction.ADVANCED_CLINICAL_TRIAL)
 	then
@@ -55,7 +55,7 @@ end
 
 rule "NIT Level 2B denied actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_B)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.TWO_B)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.CPR || $action == TreatmentAction.ICU)
 	then
@@ -64,7 +64,7 @@ end
 
 rule "NIT Level 2B unknown actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.TWO_B)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.TWO_B)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.TRANSPLANT || $action == TreatmentAction.PALLIATIVE_SURGERY || $action == TreatmentAction.CURE_SURGERY)
 	then
@@ -73,7 +73,7 @@ end
 
 rule "NIT Level 3 denied actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.THREE)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.THREE)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.CPR || $action == TreatmentAction.ICU)
 	then
@@ -82,7 +82,7 @@ end
 
 rule "NIT Level 3 unknown actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.THREE)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.THREE)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action != TreatmentAction.CPR && $action != TreatmentAction.ICU)
 	then
@@ -91,7 +91,7 @@ end
 
 rule "NIT Level 4 denied actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FOUR)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.FOUR)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action != TreatmentAction.VASOACTIVE_DRUGS && $action != TreatmentAction.NIMV)
 	then
@@ -100,7 +100,7 @@ end
 
 rule "NIT Level 4 unknown actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FOUR)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.FOUR)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.VASOACTIVE_DRUGS || $action == TreatmentAction.NIMV)
 	then
@@ -109,7 +109,7 @@ end
 
 rule "NIT Level 5 denied actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FIVE)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.FIVE)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action != TreatmentAction.NIMV)
 	then
@@ -118,7 +118,7 @@ end
 
 rule "NIT Level 5 unknown actions"
 	when
-		$treatment: TreatmentPayload(before_status.nit_level == NITLevel.FIVE)
+		$treatment: TreatmentPayload(before_status != null,before_status.nit_level == NITLevel.FIVE)
 		$action: TreatmentAction() from $treatment.actions
 		eval($action == TreatmentAction.NIMV)
 	then
