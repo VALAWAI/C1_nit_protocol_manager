@@ -1,9 +1,10 @@
 # C1_nit_protocol_manager
 
 
-## Version 1.2.0 (January 29, 2025)
+## Version 1.2.0 (January 30, 2025)
 
  - Notify unknown for actions when treatment does not have before status or NIT level.
+ - Fix shutdown notification.
  
 
 ## Version 1.1.0 (January 23, 2025)

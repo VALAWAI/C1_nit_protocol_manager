@@ -12,6 +12,7 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import eu.valawai.c1_nit_protocol_manager.messages.mov.LogService;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -43,18 +44,9 @@ public class TreatmentActionFeedbackService {
 	 */
 	public void send(TreatmentActionFeedbackPayload payload) {
 
-		this.service.send(payload).handle((success, error) -> {
-
-			if (error == null) {
-
-				this.log.debugWithPayload(payload, "Sent if a treatment action follows the NIT protocol.");
-
-			} else {
-
-				this.log.errorWithPayload(payload, "Cannot send the action feedback.");
-			}
-			return null;
-		});
+		Uni.createFrom().completionStage(this.service.send(payload)).subscribe().with(
+				any -> this.log.debugWithPayload(payload, "Sent if a treatment action follows the NIT protocol."),
+				error -> this.log.errorWithPayload(payload, "Cannot send the action feedback."));
 
 	}
 

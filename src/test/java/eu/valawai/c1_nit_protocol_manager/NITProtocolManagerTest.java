@@ -33,6 +33,7 @@ import eu.valawai.c1_nit_protocol_manager.messages.mov.MOVTestResource;
 import io.quarkus.logging.Log;
 import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 
 /**
@@ -81,18 +82,8 @@ public class NITProtocolManagerTest {
 	 */
 	public void assertSendTreatment(TreatmentPayload treatment) {
 
-		this.service.send(treatment).handle((success, error) -> {
-
-			if (error == null) {
-
-				Log.infov("Sent {0}.", treatment);
-
-			} else {
-
-				Log.errorv(error, "Cannot send {0}.", treatment);
-			}
-			return null;
-		});
+		Uni.createFrom().completionStage(this.service.send(treatment)).subscribe().with(
+				any -> Log.infov("Sent {0}.", treatment), error -> Log.errorv(error, "Cannot send {0}.", treatment));
 
 	}
 
