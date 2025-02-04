@@ -16,8 +16,8 @@ payload structure, you can refer to the following resources:
 
  - Type: C1
  - Name: NIT protocol manager
- - Version: 1.2.0 (January 29, 2025)
- - API: [1.0.1 (January 21, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yml)
+ - Version: 1.2.0 (February 5, 2025)
+ - API: [1.0.1 (February 5, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yml)
  - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
  - License: [GPL 3](LICENSE)
@@ -191,117 +191,57 @@ and **QUARKUS_HTTP_PORT**, respectively.
 
 ## Deployment on a VALAWAI Environment
 
-This guide describes the deployment process for the C1 NIT Protocol Manager component
-within a VALAWAI environment using Docker Compose.
+The `docker-compose.yml` file defines how to deploy the C1 NIT Protocol Manager component within
+a VALAWAI environment.  It includes profiles for the Master of VALAWAI (MOV) and a mocked email server.
 
-### Prerequisites
-
-*   Docker and Docker Compose must be installed and configured on your system. Refer
- to the official documentation for installation instructions:
- 
-    *   Docker: [https://docs.docker.com/](https://docs.docker.com/)
-    *   Docker Compose: [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
-
-### Deployment Steps
-
-1.  **Locate the `docker-compose.yml` file:** This file defines the configuration
- for deploying the C1 NIT Protocol Manager component and its dependencies using
-  Docker Compose.
-
-2.  **Identify the `mov` profile:** The `docker-compose.yml` file likely includes a profile 
-named `mov`. This profile is specifically designed to launch the Master Of Valawai (MOV) 
-service alongside the C1 NIT Protocol Manager component.
-
-3.  **Start the services:** Use the following command to initiate deployment 
-with the `mov` profile:
+To start the component with MOV and the mail server, use the following command:
 
 ```bash
-COMPOSE_PROFILES=mov docker-compose up -d
+COMPOSE_PROFILES=mov docker compose up -d
 ```
 
-    *   `COMPOSE_PROFILES=mov`: This sets the active profile to `mov` within the
-     `docker-compose.yml` file.
-    *   `docker-compose up -d`: This instructs Docker Compose to bring up all services defined in 
-    the `mov` profile and run them in detached mode (background).
+The MOV user interface is available at [http://localhost:8081](http://localhost:8081), 
+and the RabbitMQ management interface at [http://localhost:8082](http://localhost:8082) 
+with credentials `mov:password`.
 
-4.  **Access the user interfaces:** Once the deployment is complete, you can access
- the user interfaces of the deployed services:
+### Configuration 
 
-    *   **MOV User Interface:** Open a web browser and navigate to 
-    [http://localhost:8081](http://localhost:8081). This URL should display the MOV user interface.
-    *   **RabbitMQ User Interface (Optional):** The RabbitMQ message broker, used for communication between 
-    services, also has a user interface accessible at [http://localhost:8082](http://localhost:8082). 
-    The default credentials for RabbitMQ are `mov:password`.
+Environment variables can be configured by creating a `.env` file (see 
+[Docker Compose documentation](https://docs.docker.com/compose/environment-variables/env-file/)).  
+Define variables in the `.env` file using the format `VARIABLE_NAME=value`.  For example:
 
-**Important Note:** Accessing the RabbitMQ user interface is not essential for the core
- functionality of the C1 NIT Protocol Manager component. It is primarily used for 
- administrative purposes.
-
-### Environment Variables
-
-The `docker-compose.yml` file might leverage environment variables to customize the deployment
-configuration. You can override these defaults by creating a file named `.env` in the same
-directory as the `docker-compose.yml` file. Each line in the `.env` file should follow the 
-format `<variable_name>=<variable_value>`. Here's an example:
+On the file [docker-compose.yml](docker-compose.yml), you can see how the docker image
+of this component can be deployed on a valawai environment. On this file are defined
+the profiles **mov** and **mail**. The first one is to launch
+the [Master Of Valawai (MOV)](https://github.com/VALAWAI/MOV) and the second one is to start
+a [mocked e-mail server](https://github.com/dbck/docker-mailtrap). You can use the next
+command to start this component with the MOV and the mail server.
 
 ```
 MQ_HOST=rabbitmq.valawai.eu
-MQ_USERNAME=c1_nit_protocol_manager
+MQ_USERNAME=c0_patient_treatment_ui
 MQ_PASSWORD=lkjagb_ro82t¿134
 ```
 
-The following environment variables are available:
+The following environment variables are supported:
 
-*   **`C1_NIT_PROTOCOL_MANAGER_TAG`**: This variable specifies the tag of the C1 NIT
- Protocol Manager Docker image to use. The default value is `latest`.
-
-*   **`MQ_HOST`**: This variable specifies the hostname of the message queue broker. 
-The default value is `mq`.
-
-*   **`MQ_PORT`**: This variable specifies the port of the message queue broker. 
-The default value is `5672`.
-
-*   **`MQ_UI_PORT`**: This variable specifies the port of the message queue broker user
- interface. The default value is `8081`.
-
-*   **`MQ_USER`**: This variable specifies the username for accessing the message queue 
-broker. The default value is `mov`.
-
-*   **`MQ_PASSWORD`**: This variable specifies the password for authentication with 
-the message queue broker. The default value is `password`.
-
-*   **`RABBITMQ_TAG`**: This variable specifies the tag of the RabbitMQ Docker image. 
-The default value is `management`.
-
-*   **`MONGODB_TAG`**: This variable specifies the tag of the MongoDB Docker image. 
-The default value is `latest`.
-
-*   **`MONGO_PORT`**: This variable specifies the port where MongoDB is available. 
-The default value is `27017`.
-
-*   **`MONGO_ROOT_USER`**: This variable specifies the username of the MongoDB root user. 
-The default value is `root`.
-
-*   **`MONGO_ROOT_PASSWORD`**: This variable specifies the password of the MongoDB root 
-user. The default value is `password`.
-
-*   **`MONGO_LOCAL_DATA`**: This variable specifies the local directory for storing MongoDB
- data. The default value is `~/mongo_data/movDB`.
-
-*   **`MOV_DB_NAME`**: This variable specifies the name of the database used by the MOV. 
-The default value is `movDB`.
-
-*   **`MOV_DB_USER_NAME`**: This variable specifies the username used by the MOV to access 
-the database. The default value is `mov`.
-
-*   **`MOV_DB_USER_PASSWORD`**: This variable specifies the password of the user used by 
-the MOV to access the database. The default value is `password`.
-
-*   **`MOV_TAG`**: This variable specifies the tag of the MOV Docker image. The default 
-value is `latest`.
-
-*   **`MOV_UI_PORT`**: This variable specifies the port where the MOV user interface is 
-available. The default value is `8080`.
+* **`C1_NIT_PROTOCOL_MANAGER_TAG`:** Tag for the C1 NIT Protocol Manager Docker image. Default: `latest`
+* **`MQ_HOST`:** Hostname of the message queue broker. Default: `mq`
+* **`MQ_PORT`:** Port of the message queue broker. Default: `5672`
+* **`MQ_UI_PORT`:** Port of the message queue broker UI. Default: `8081`
+* **`MQ_USER`:** Username for accessing the message queue broker. Default: `mov`
+* **`MQ_PASSWORD`:** Password for accessing the message queue broker. Default: `password`
+* **`RABBITMQ_TAG`:** Tag for the RabbitMQ Docker image. Default: `management`
+* **`MONGODB_TAG`:** Tag for the MongoDB Docker image. Default: `latest`
+* **`MONGO_PORT`:** Port where MongoDB is accessible. Default: `27017`
+* **`MONGO_ROOT_USER`:** Root username for MongoDB. Default: `root`
+* **`MONGO_ROOT_PASSWORD`:** Root password for MongoDB. Default: `password`
+* **`MONGO_LOCAL_DATA`:** Local directory for MongoDB data. Default: `~/.mongo_data/patienttreatmentuiMovDB`
+* **`MOV_DB_NAME`:** Name of the database used by MOV. Default: `movDB`
+* **`MOV_DB_USER_NAME`:** Username used by MOV to access the database. Default: `mov`
+* **`MOV_DB_USER_PASSWORD`:** Password used by MOV to access the database. Default: `password`
+* **`MOV_TAG`:** Tag for the MOV Docker image. Default: `latest`
+* **`MOV_UI_PORT`:** Port where the MOV UI is accessible. Default: `8081`
 
 
 ### Database Considerations
@@ -323,69 +263,73 @@ COMPOSE_PROFILES=mov docker-compose down
 ## Development Environment
 
 This section details how to set up and interact with the development environment
- for the C1 NIT Protocol Manager component.
+for the C1 NIT Protocol Manager component.
 
-### Starting the Development Environment
+### Setting Up the Environment
 
-1.  **Run the development environment script:** Initiate the development environment
- by executing the following script from your terminal:
+1.  **Start the Development Environment:** Open your terminal and execute the 
+following script:
 
 ```bash
 ./startDevelopmentEnvironment.sh
 ```
 
-    This script launches a Bash shell specifically tailored for development purposes.
+This script launches a Bash shell configured for development.  All subsequent commands 
+should be run within this development shell.
 
-2.  **Start the development server (optional):** Within the development shell, 
-you can initiate the development server using the command:
+2.  **Start the development server (optional):** Inside the development shell, start 
+the development server:
 
 ```bash
 startServer
 ```
 
-    This command starts the C1 NIT Protocol Manager component in development mode, enabling hot 
-    reloading of code modifications.
+This command starts the C1 NIT Protocol Manager in development mode, enabling hot reloading 
+for code changes. 
+
 
 ### Running Tests
 
-There are several methods to execute tests for the C1 NIT Protocol Manager
- component:
+You can run tests using Maven:
 
-*   **Using Maven:**
+* **Run all tests:**
 
-    *   `mvn test`: This command instructs Maven to run all unit and integration
-     tests associated with the project.
-    *   `mvnd test`: This command is identical to `mvn test` but enables debugging during test
-     execution.
-    *   `mvn -DuseDevMOV=true test`: This command executes all tests while utilizing the running 
-    instance of the Master of VALAWAI (MOV) instead of launching a separate container for testing purposes.
+```bash
+mvn test
+```
+
+* **Run tests with debugging enabled:**
+
+```bash
+vnd tes
+```
+
+* **Run tests using the existing Master of VALAWAI (MOV) instance:**
+
+```bash
+mvn -DuseDevMOV=true test
+```
 
 ### Development Environment Components
 
-The development environment script launches several services to facilitate
- development activities:
+The development environment script launches the following services:
 
-*   **RabbitMQ:** This message broker acts as a central communication hub 
-for message exchange between various components. You can access the RabbitMQ 
-management interface at [http://localhost:8081](http://localhost:8081) using 
-the credentials `mov:password`.
+* **RabbitMQ:** A message broker facilitating communication between components. Access 
+the management interface at [http://localhost:8081](http://localhost:8081) using the 
+credentials `mov:password`.
 
-*   **MongoDB:** This NoSQL database stores application data used by the MOV. 
-The database is named `movDB`, and the default user credentials are `mov:password`.
+* **MongoDB:** A NoSQL database used by the MOV. The database name is `movDB`, and 
+the default credentials are `mov:password`.
 
-*   **Mongo Express:** This web interface provides a user-friendly way to interact 
-with the MongoDB database. Access the Mongo Express interface at 
-[http://localhost:8082](http://localhost:8082) using the credentials `mov:password`.
+* **Mongo Express:** A web interface for managing the MongoDB database. Access it at 
+[http://localhost:8082](http://localhost:8082) using credentials `mov:password`.
 
-*   **Master of VALAWAI (MOV) (Optional):** The MOV is responsible for managing 
-the network topology and connections between components. The development environment
- optionally launches an instance of MOV. If running, you can access the MOV user 
- interface at [http://localhost:8084](http://localhost:8084).
+* **Master of VALAWAI (MOV):** Manages network topology and component connections. If running,
+ access the MOV UI at [http://localhost:8084](http://localhost:8084).
 
-This development environment streamlines the development process by providing a readily 
-available infrastructure for testing, debugging, and iterating on the C1 NIT Protocol 
-Manager component.
-
+This development environment provides a pre-configured infrastructure for developing, testing, 
+and debugging the C1 NIT Protocol Manager component, streamlining the development process 
+and enabling efficient iteration.
 
 ## Links
 
