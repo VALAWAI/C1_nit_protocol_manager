@@ -1,6 +1,11 @@
 # C1_nit_protocol_manager
 
 
+## Version 1.2.1 (April 29, 2025)
+
+ - Upgrade quarkus
+ 
+ 
 ## Version 1.2.0 (February 5, 2025)
 
  - Notify unknown for actions when treatment does not have before status or NIT level.

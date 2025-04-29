@@ -36,7 +36,7 @@ else
 		IMAGE_DATE=$(echo $IMAGE_DATE|date +%s)
 	fi
 	if [ $FILE_DATE -ge $IMAGE_DATE ]; then
-		DOCKER_BUILDKIT=1 docker build -f src/dev/docker/Dockerfile -t valawai/c1_nit_protocol_manager:dev .
+		DOCKER_BUILDKIT=1 docker build --pull -f src/dev/docker/Dockerfile -t valawai/c1_nit_protocol_manager:dev .
 	fi
 
     DOCKER_ARGS="$DOCKER_ARGS --rm --name mov_build_docker_image --add-host=host.docker.internal:host-gateway -v /var/run/docker.sock:/var/run/docker.sock"

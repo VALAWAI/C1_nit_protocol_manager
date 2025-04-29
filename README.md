@@ -16,7 +16,7 @@ payload structure, you can refer to the following resources:
 
  - Type: C1
  - Name: NIT protocol manager
- - Version: 1.2.0 (February 5, 2025)
+ - Version: 1.2.1 (April 29, 2025)
  - API: [1.0.1 (January 21, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yml)
  - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
@@ -209,13 +209,6 @@ with credentials `mov:password`.
 Environment variables can be configured by creating a `.env` file (see 
 [Docker Compose documentation](https://docs.docker.com/compose/environment-variables/env-file/)).  
 Define variables in the `.env` file using the format `VARIABLE_NAME=value`.  For example:
-
-On the file [docker-compose.yml](docker-compose.yml), you can see how the docker image
-of this component can be deployed on a valawai environment. On this file are defined
-the profiles **mov** and **mail**. The first one is to launch
-the [Master Of Valawai (MOV)](https://github.com/VALAWAI/MOV) and the second one is to start
-a [mocked e-mail server](https://github.com/dbck/docker-mailtrap). You can use the next
-command to start this component with the MOV and the mail server.
 
 ```
 MQ_HOST=rabbitmq.valawai.eu
