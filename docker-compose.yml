@@ -58,11 +58,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-password}
       MONGO_INITDB_DATABASE: ${DB_NAME:-movDB}
-      DB_NAME: ${MOV_DB_NAME:-movDB}
-      DB_USER_NAME: ${MOV_DB_USER_NAME:-mov}
-      DB_USER_PASSWORD: ${MOV_DB_USER_PASSWORD:-password}
+      MOV_DB_NAME: ${MOV_DB_NAME:-movDB}
+      MOV_DB_USER_NAME: ${MOV_DB_USER_NAME:-mov}
+      MOV_DB_USER_PASSWORD: ${MOV_DB_USER_PASSWORD:-password}
     volumes:
-      - ./src/deploy/docker/initialize-movDB.js:/docker-entrypoint-initdb.d/init-mongo.js
       - ${MONGO_LOCAL_DATA:-~/.mongo_data/patienttreatmentuiMovDB}:/data/db
     healthcheck:
       test: ["CMD-SHELL", "mongosh --quiet localhost/${DB_NAME:-movDB} --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"]
@@ -70,7 +69,11 @@ services:
       timeout: 10s
       retries: 5
       start_period: 1m
-      start_interval: 5s  
+      start_interval: 5s
+    configs:
+      - source: init-mongo.js
+        target: /docker-entrypoint-initdb.d/init-mongo.js
+
 
   mov:
     image: valawai/mov:${MOV_TAG:-latest}
@@ -107,3 +110,15 @@ services:
 
 networks:
   nit_protocol_manager_net:
+
+configs:
+  init-mongo.js:
+    content: |
+      db.createUser({
+        user: process.env.MOV_DB_USER_NAME,
+        pwd: process.env.MOV_DB_USER_PASSWORD,
+        roles: [{
+          role: 'readWrite',
+          db: process.env.MOV_DB_NAME
+        }]
+      })

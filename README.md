@@ -16,7 +16,7 @@ payload structure, you can refer to the following resources:
 
  - Type: C1
  - Name: NIT protocol manager
- - Version: 1.2.1 (April 29, 2025)
+ - Version: 1.2.1 (April 30, 2025)
  - API: [1.0.1 (January 21, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yml)
  - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
  - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)

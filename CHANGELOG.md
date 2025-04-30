@@ -1,9 +1,10 @@
 # C1_nit_protocol_manager
 
 
-## Version 1.2.1 (April 29, 2025)
+## Version 1.2.1 (April 30, 2025)
 
- - Upgrade quarkus
+ - Upgrade quarkus.
+ - Add mongo config in docker compose files.
  
  
 ## Version 1.2.0 (February 5, 2025)
