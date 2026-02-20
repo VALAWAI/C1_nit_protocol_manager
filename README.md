@@ -1,334 +1,142 @@
 # C1_nit_protocol_manager
 
-The C1 NIT Protocol Manager is a critical component responsible for ensuring the integrity
+The NIT Protocol Manager (C1) is a component responsible for ensuring the integrity
 of the treatment process. It functions by receiving treatment data and meticulously verifying t
 hat it adheres to the established NIT protocol specifications. This rigorous validation step
 safeguards against potential inconsistencies or errors that could compromise the treatment's efficacy.
 
-For further technical details concerning the C1 NIT Protocol Manager, including the message
-payload structure, you can refer to the following resources:
-
- - [asyncapi.yaml](asyncapi.yaml)
- - [Component Documentation](https://valawai.github.io/docs/components/C1/nit_protocol_manager).
-
-
 ## Summary
 
- - Type: C1
- - Name: NIT protocol manager
- - Version: 1.2.1 (April 30, 2025)
- - API: [1.0.1 (January 21, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yml)
- - VALAWAI API: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
- - Developed By: [IIIA-CSIC](https://www.iiia.csic.es)
- - License: [GPL 3](LICENSE)
+- **Type**: [C1](https://valawai.github.io/docs/components/C1/)
+- **Name**: NIT protocol manager
+- **Documentation**: [https://valawai.github.io/docs/components/C1/nit_protocol_manager](https://valawai.github.io/docs/components/C1/nit_protocol_manager)
+- **Versions**:
+  - **Stable version**: [1.2.2 (February 20, 2026)](https://github.com/VALAWAI/C1_nit_protocol_manager/tree/1.2.2)
+  - **API**: [1.0.1 (January 21, 2025)](https://raw.githubusercontent.com/VALAWAI/C1_nit_protocol_manager/ASYNCAPI_1.0.1/asyncapi.yaml)
+  - **Required MOV API**: [1.2.0 (March 9, 2024)](https://raw.githubusercontent.com/valawai/MOV/ASYNCAPI_1.2.0/asyncapi.yml)
+- **Developed By**: [IIIA-CSIC](https://www.iiia.csic.es)
+- **License**: [GPL v3](LICENSE)
+- **Technology Readiness Level (TLR)**: [3](https://valawai.github.io/docs/components/C1/nit_protocol_manager/tlr)
+
+## Usage
+
+The C1 NIT Protocol Manager identifies if the treatments proposed by a medical professional follow the NIT protocol. This protocol determines which medical actions are allowed or denied based on the patient's NIT (Therapeutic Intensity Level).
+
+- **Check Treatment**: The component monitors the `valawai/c1/nit_protocol_manager/data/treatment` channel for new treatment plans. Each treatment includes patient status criteria (e.g., age range, clinical risk group) and a list of proposed actions.
+- **Provide Action Feedback**: For every treatment received, the component validates the actions against the NIT protocol and publishes the results to the `valawai/c1/nit_protocol_manager/data/treatment_action_feedback` channel. Feedback can be `ALLOW`, `DENY`, or `UNKNOWN`.
+
+## Deployment
+
+The **C1 NIT protocol manager** is designed to run as a Docker container, working within
+the [Master Of VALAWAI (MOV)](https://valawai.github.io/docs/architecture/implementations/mov) ecosystem.
+For a complete guide, including advanced setups, refer to
+the [component's full deployment documentation](https://valawai.github.io/docs/components/C1/nit_protocol_manager/deploy).
+
+Here's how to quickly get it running:
+
+1. ### Build the Docker Image
+
+   First, you need to build the Docker image. Go to the project's root directory and run:
+
+   ```bash
+   ./buildDockerImages.sh -t latest
+   ```
+
+   This creates the `valawai/c1_nit_protocol_manager:latest` Docker image, which is referenced in the `docker-compose.yml` file.
+
+2. ### Start the Component
+
+   You have two main ways to start the component:
+
+   A. **With MOV:**
+   To run the C1 NIT protocol manager with the MOV, use:
+
+   ```bash
+   COMPOSE_PROFILES=all docker compose up -d
+   ```
+
+   Once started, you can access:
+   - **MOV:** [http://localhost:8081](http://localhost:8081)
+   - **RabbitMQ UI:** [http://localhost:8082](http://localhost:8082) (credentials: `mov:password`)
+   - **Mongo DB:** `localhost:27017` (credentials: `mov:password`)
+
+   B. **As a Standalone Component (connecting to an existing MOV/RabbitMQ):**
+   If you already have MOV running or want to connect to a remote RabbitMQ, you'll need a [`.env` file](https://docs.docker.com/compose/environment-variables/env-file/) with connection details. Create a `.env` file in the same directory as your `docker-compose.yml` like this:
+
+   ```properties
+   MOV_MQ_HOST=host.docker.internal
+   MOV_MQ_USERNAME=mov
+   MOV_MQ_PASSWORD=password
+   C1_NIT_PROTOCOL_MANAGER_PORT=9080
+   ```
+
+   Find full details on these and other variables in the [component's dedicated deployment documentation](https://valawai.github.io/docs/components/C1/nit_protocol_manager/deploy).
+   Once your `.env` file is configured, start only the NIT protocol manager (without MOV) using:
+
+   ```bash
+   COMPOSE_PROFILES=component docker compose up -d
+   ```
+
+3. ### Stop All Containers
+
+    To stop all containers launched, run:
+
+    ```bash
+    COMPOSE_PROFILES=all docker compose down
+    ```
+
+    This command stops the MOV, RabbitMQ, and Mongo containers.
 
 
-## Generate Docker image
+## Development environment
 
-The recommended way to create a Docker image for this component is to run the script:
- 
- ```
-./buildDockerImages.sh
-```
+To ensure a consistent and isolated development experience, this component is configured
+to use Docker. This approach creates a self-contained environment with all the necessary
+software and tools for building and testing, minimizing conflicts with your local system
+and ensuring reproducible results.
 
-This script will build the image and tag it with the component's version 
-(e.g., `valawai/c1_nit_protocol_manager:1.0.1`).
-
-The script offers several options for customization:
-
-* **Specify tag:** Use `-t <tag>` or `--tag <tag>` to assign a custom tag name 
-to the image (e.g., `./buildDockerImages.sh -t my-custom-image-name`).
-* **Help message:** Use `-h` or `--help` to display a detailed explanation 
-of all available options.
-
-For example, to build an image with the tag `latest`, run:
-
-```bash
-./buildDockerImages.sh -t latest
-```
-
-This will create the container named `valawai/c1_nit_protocol_manager:latest`.
-
-
-### Docker Environment Variables
-
-The following environment variables are used to configure the Docker container. 
-These variables allow for customization of the application's runtime behavior 
-without requiring modification of the Docker image itself.
-
-*   **`RABBITMQ_HOST`**: Specifies the hostname or IP address of the RabbitMQ server. 
-This variable determines the location where the application connects to the message broker.
- The default value is `mov-mq`.
-
-*   **`RABBITMQ_PORT`**: Specifies the port number used for communication with the RabbitMQ
- server. The default value is `5672`.
-
-*   **`RABBITMQ_USERNAME`**: Specifies the username used for authenticating with the RabbitMQ
- server. The default value is `mov`.
-
-*   **`RABBITMQ_PASSWORD`**: Specifies the password used for authentication with the RabbitMQ
-server. **Caution:** Exercise caution when managing this variable. Avoid hardcoding sensitive 
-information. The default value is `password`.
-
-*   **`LOG_LEVEL`**: Defines the verbosity of log messages generated by the application. Common 
-log levels, in increasing order of verbosity, include `TRACE`, `DEBUG`, `INFO`, `WARN`, and `ERROR`. 
-The default value is `INFO`.
-
-*   **`QUARKUS_HTTP_HOST`**: Specifies the network interface the embedded HTTP server binds to 
-for exposing REST health endpoints. A value of `0.0.0.0` indicates binding to all available interfaces
-. The default value is `0.0.0.0`.
-
-*   **`QUARKUS_HTTP_PORT`**: Specifies the port number the embedded HTTP server listens on for 
-REST health endpoint requests. The default value is `8080`.
-
-*   **`C1_NIT_PROTOCOL_MANAGER_NORMS_FILE`**: Specifies the file path to the configuration file
- containing the norms used for NIT protocol validation. The default value is 
- `eu/valawai/c1_nit_protocol_manager/nit-protocol.drl`.
-
-*   **`C1_NIT_PROTOCOL_MANAGER_NORMS_TYPE`**: Specifies the format or type of the norms defined 
-within the norms file. For example, `DRL` indicates Drools Rule Language. The default value is `DRL`.
-
-**Important Considerations:**
-
-*   Default values are used if corresponding environment variables are not explicitly set.
-*   For enhanced security, it is strongly recommended to utilize Docker secrets or other secure 
-configuration management mechanisms to handle sensitive information such as passwords. Avoid 
-storing passwords directly in Dockerfiles or scripts.
-
-
-### Docker Health Checks
-
-This component provides several REST endpoints for monitoring its health status, 
-enabling external systems and orchestration tools to assess its operational state.
-
-The following endpoints are available:
-
-*   **/q/health/live**: This endpoint indicates whether the component is currently
- running. A successful response signifies that the component's process is active.
-
-*   **/q/health/ready**: This endpoint indicates whether the component is ready 
-to process messages from the VALAWAI infrastructure. A successful response signifies 
-that the component's dependencies and internal services are initialized and functioning 
-correctly.
-
-*   **/q/health/started**: This endpoint indicates whether the component has completed 
-its startup sequence. A successful response signifies that the component's initialization
- procedures have finished.
-
-*   **/q/health**: This endpoint provides a comprehensive health status report, encompassing
- the results of all the aforementioned checks.
-
-Each endpoint returns a JSON payload containing a `status` field (with values of `UP` or `DOWN`)
-and a `checks` array detailing the individual health checks performed. The following example 
-illustrates the response from a `GET` request to the `/q/health` endpoint:
-
-```json
-{
-    "status": "UP",
-    "checks": [
-        {
-            "name": "Registered C1 NIT protocol manager",
-            "status": "UP"
-        },
-        {
-            "name": "SmallRye Reactive Messaging - liveness check",
-            "status": "UP",
-            "data": {
-                "received_treatment": "[OK]",
-                "registered": "[OK]",
-                "send_log": "[OK]",
-                "send_unregister_component": "[OK]",
-                "send_register_component": "[OK]",
-                "send_treatment_action_feedback": "[OK]"
-            }
-        },
-        {
-            "name": "Norm engine",
-            "status": "UP"
-        },
-        {
-            "name": "SmallRye Reactive Messaging - readiness check",
-            "status": "UP",
-            "data": {
-                "received_treatment": "[OK]",
-                "registered": "[OK]",
-                "send_log": "[OK]",
-                "send_unregister_component": "[OK]",
-                "send_register_component": "[OK]",
-                "send_treatment_action_feedback": "[OK]"
-            }
-        },
-        {
-            "name": "SmallRye Reactive Messaging - startup check",
-            "status": "UP"
-        }
-    ]
-}
-```
- 
-A user interface is also available for visualizing the component's health status at 
-[http://localhost:8080/q/health-ui/](http://localhost:8080/q/health-ui/). This interface 
-provides a more user-friendly representation of the health check data.
-
-These endpoints are particularly useful for configuring health checks within orchestration 
-tools such as Docker Compose. The following example demonstrates a Docker Compose health 
-check configuration for this component:
-
-```
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:8080/q/health | grep -m 1 -P \"^[\\s|\\{|\\\"]+status[\\s|\\:|\\\"]+.+\\\"\" |grep -q \"\\\"UP\\\"\""]
-      interval: 1m
-      timeout: 10s
-      retries: 5
-      start_period: 1m
-      start_interval: 5s
-```
-
-It is important to note that the host and port on which these REST health endpoints 
-are exposed can be configured using the Docker environment variables **QUARKUS_HTTP_HOST**
-and **QUARKUS_HTTP_PORT**, respectively.
-
-
-## Deployment on a VALAWAI Environment
-
-The `docker-compose.yml` file defines how to deploy the C1 NIT Protocol Manager component within
-a VALAWAI environment.  It includes profiles for the Master of VALAWAI (MOV) and a mocked email server.
-
-To start the component with MOV and the mail server, use the following command:
-
-```bash
-COMPOSE_PROFILES=mov docker compose up -d
-```
-
-The MOV user interface is available at [http://localhost:8081](http://localhost:8081), 
-and the RabbitMQ management interface at [http://localhost:8082](http://localhost:8082) 
-with credentials `mov:password`.
-
-### Configuration 
-
-Environment variables can be configured by creating a `.env` file (see 
-[Docker Compose documentation](https://docs.docker.com/compose/environment-variables/env-file/)).  
-Define variables in the `.env` file using the format `VARIABLE_NAME=value`.  For example:
-
-```
-MQ_HOST=rabbitmq.valawai.eu
-MQ_USERNAME=c0_patient_treatment_ui
-MQ_PASSWORD=lkjagb_ro82t¿134
-```
-
-The following environment variables are supported:
-
-* **`C1_NIT_PROTOCOL_MANAGER_TAG`:** Tag for the C1 NIT Protocol Manager Docker image. Default: `latest`
-* **`MQ_HOST`:** Hostname of the message queue broker. Default: `mq`
-* **`MQ_PORT`:** Port of the message queue broker. Default: `5672`
-* **`MQ_UI_PORT`:** Port of the message queue broker UI. Default: `8081`
-* **`MQ_USER`:** Username for accessing the message queue broker. Default: `mov`
-* **`MQ_PASSWORD`:** Password for accessing the message queue broker. Default: `password`
-* **`RABBITMQ_TAG`:** Tag for the RabbitMQ Docker image. Default: `management`
-* **`MONGODB_TAG`:** Tag for the MongoDB Docker image. Default: `latest`
-* **`MONGO_PORT`:** Port where MongoDB is accessible. Default: `27017`
-* **`MONGO_ROOT_USER`:** Root username for MongoDB. Default: `root`
-* **`MONGO_ROOT_PASSWORD`:** Root password for MongoDB. Default: `password`
-* **`MONGO_LOCAL_DATA`:** Local directory for MongoDB data. Default: `~/.mongo_data/patienttreatmentuiMovDB`
-* **`MOV_DB_NAME`:** Name of the database used by MOV. Default: `movDB`
-* **`MOV_DB_USER_NAME`:** Username used by MOV to access the database. Default: `mov`
-* **`MOV_DB_USER_PASSWORD`:** Password used by MOV to access the database. Default: `password`
-* **`MOV_TAG`:** Tag for the MOV Docker image. Default: `latest`
-* **`MOV_UI_PORT`:** Port where the MOV UI is accessible. Default: `8081`
-
-
-### Database Considerations
-
-The database is created only during the initial deployment. If you modify 
-any database parameters, you must recreate the database. To do this, remove 
-the directory specified by the `MONGO_LOCAL_DATA` environment variable and 
-restart the Docker Compose deployment.
-
-
-### Stopping the Deployment
-
-To stop all started containers, use the following command:
-
-```bash
-COMPOSE_PROFILES=mov docker-compose down
-```
-  
-## Development Environment
-
-This section details how to set up and interact with the development environment
-for the C1 NIT Protocol Manager component.
-
-### Setting Up the Environment
-
-1.  **Start the Development Environment:** Open your terminal and execute the 
-following script:
+You can launch the development environment by running this script:
 
 ```bash
 ./startDevelopmentEnvironment.sh
 ```
 
-This script launches a Bash shell configured for development.  All subsequent commands 
-should be run within this development shell.
+Once the environment starts, you'll find yourself in a bash shell, ready to interact with
+the Quarkus development environment. You'll also have access to the following integrated tools:
 
-2.  **Start the development server (optional):** Inside the development shell, start 
-the development server:
+- **Master of VALAWAI**: The central component managing topology connections between services.
+  Its web interface is accessible at [http://localhost:8081](http://localhost:8081).
+- **RabbitMQ** The message broker for inter-component communication. The management web interface
+  is at [http://localhost:8082](http://localhost:8082), with credentials `mov**:**password`.
+- **MongoDB**: The database used by the MOV, named `movDB`, with user credentials `mov:password`.
+- **Mongo express**: A web interface for interacting with MongoDB, available at
+  [http://localhost:8084](http://localhost:8084), also with credentials `mov**:**password`.
 
-```bash
-startServer
-```
+Within this console, you can use the official [`quarkus` client](https://quarkus.io/guides/cli-tooling#using-the-cli)
+or any of these convenient commands:
 
-This command starts the C1 NIT Protocol Manager in development mode, enabling hot reloading 
-for code changes. 
+- `startServer`: To initiate the development server.
+- `mvn clean`: To clean the project (compiled and generated code).
+- `mvn test`: To run all project tests.
+- `mvn -DuseDevMOV=true test`: To execute tests using the already started Master of VALAWAI instance,
+  rather than an independent container.
 
-
-### Running Tests
-
-You can run tests using Maven:
-
-* **Run all tests:**
-
-```bash
-mvn test
-```
-
-* **Run tests with debugging enabled:**
+To exit the development environment, simply type `exit` in the bash shell or run the following script:
 
 ```bash
-vnd tes
+./stopDevelopmentEnvironment.sh
 ```
 
-* **Run tests using the existing Master of VALAWAI (MOV) instance:**
+In either case, the development environment will gracefully shut down, including all activated services
+like MOV, RabbitMQ, MongoDB, and Mongo Express.
 
-```bash
-mvn -DuseDevMOV=true test
-```
+## Helpful Links
 
-### Development Environment Components
+Here's a collection of useful links related to this component and the VALAWAI ecosystem:
 
-The development environment script launches the following services:
-
-* **RabbitMQ:** A message broker facilitating communication between components. Access 
-the management interface at [http://localhost:8081](http://localhost:8081) using the 
-credentials `mov:password`.
-
-* **MongoDB:** A NoSQL database used by the MOV. The database name is `movDB`, and 
-the default credentials are `mov:password`.
-
-* **Mongo Express:** A web interface for managing the MongoDB database. Access it at 
-[http://localhost:8082](http://localhost:8082) using credentials `mov:password`.
-
-* **Master of VALAWAI (MOV):** Manages network topology and component connections. If running,
- access the MOV UI at [http://localhost:8084](http://localhost:8084).
-
-This development environment provides a pre-configured infrastructure for developing, testing, 
-and debugging the C1 NIT Protocol Manager component, streamlining the development process 
-and enabling efficient iteration.
-
-## Links
-
- - [C1 NIT protocol manager documentation](https://valawai.github.io/docs/components/C1/nit_protocol_manager)
- - [Master Of VALAWAI tutorial](https://valawai.github.io/docs/tutorials/mov)
- - [VALWAI documentation](https://valawai.github.io/docs/)
- - [VALAWAI project web site](https://valawai.eu/)
- - [Twitter](https://twitter.com/ValawaiEU)
- - [GitHub](https://github.com/VALAWAI)
+- **C1 NIT Protocol Manager Documentation**: [https://valawai.github.io/docs/components/C1/nit_protocol_manager](https://valawai.github.io/docs/components/C1/nit_protocol_manager)
+- **Master Of VALAWAI (MOV)**: [https://valawai.github.io/docs/architecture/implementations/mov/](https://valawai.github.io/docs/architecture/implementations/mov/)
+- **VALAWAI Main Documentation**: [https://valawai.github.io/docs/](https://valawai.github.io/docs/)
+- **VALAWAI on GitHub**: [https://github.com/VALAWAI](https://github.com/VALAWAI)
+- **VALAWAI Official Website**: [https://valawai.eu/](https://valawai.eu/)
+- **VALAWAI on X (formerly Twitter)**: [https://x.com/ValawaiEU](https://x.com/ValawaiEU)

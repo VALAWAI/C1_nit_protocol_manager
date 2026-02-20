@@ -1,6 +1,12 @@
 # C1_nit_protocol_manager
 
 
+## Version 1.2.2 (February 20, 2025)
+
+ - Upgrade quarkus.
+ - Improve documentation.
+
+
 ## Version 1.2.1 (April 30, 2025)
 
  - Upgrade quarkus.
